@@ -24,8 +24,8 @@ class Post(Base):
     __tablename__ = "post"
     id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
     title = Column(String(100), nullable=False)
-    date_posted = Column(DateTime, default=datetime.utcnow)
     content = Column(Text, nullable=False)
+    date_posted = Column(DateTime, default=datetime.utcnow)
     user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
     author = relationship("User", back_populates="posts")
     comments = relationship("Comment", back_populates="post")

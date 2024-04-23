@@ -3,12 +3,15 @@
 import uvicorn
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.responses import HTMLResponse
-from engine import get_db, create_db, models
-from engine.schemas import UserBase, UserCreate,  UserLogin
+from engine import get_db, create_db, models, schemas
+from engine.schemas import (UserBase,
+                            User, Post, Comment, UserCreate,  UserLogin,
+                            PostCreate, CommentCreate)
 from auth.secure import (Token, get_password_hash, verify_password,
                          authenticate_user, create_access_token,
                          ACCESS_TOKEN_EXPIRE_MINUTES)
 from datetime import timedelta
+from typing import List
 from sqlalchemy.orm import Session
 
 app = FastAPI()
@@ -33,7 +36,7 @@ async def home():
     """
 
 
-@app.post("/signup/", response_model=UserBase)
+@app.post("/signup/", response_model=User)
 async def signup(user: UserCreate, db: Session = Depends(get_db)):
     """ Returns user id """
 
@@ -71,9 +74,38 @@ async def login(user: UserLogin, db: Session = Depends(get_db)):
     return Token(access_token=access_token, token_type="bearer")
 
 
-# @app.post("/posts/", response_model=models.Post)
-# async def create_post_api(db: Session = Depends(get_db)):
-#    pass
+@app.get("/get_users/", response_model=List[User])
+async def get_users(db: Session = Depends(get_db)):
+    """ Returns All Users"""
+
+    users_data = db.query(models.User).all()
+    if not users_data:
+        raise HTTPException(status_code=404, detail="No users found")
+    return [schemas.User.from_orm(user) for user in users_data]
+
+
+@app.post("/posts/", response_model=Post)
+async def create_post(user: UserBase, post: PostCreate, db: Session = Depends(get_db)):
+    """ route to create validated posts """
+
+    user = db.query(models.User).filter(models.User.id == user.id).first()
+    if user:
+        new_post = models.Post(
+            user_id=user.id, title=post.title, content=post.content)
+    else:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    try:
+        db.add(new_post)
+        db.commit()
+        db.refresh(new_post)
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(
+            status_code=400, detail="Error while creating post")
+
+    return new_post
+
 #
 #
 # @app.get("/posts/", response_model=List[Post])

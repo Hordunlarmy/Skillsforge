@@ -4,11 +4,22 @@ from datetime import datetime
 
 
 class UserBase(BaseModel):
+    """ User Base Model"""
+    id: str
+
+
+class User(UserBase):
+    """ Base User Model"""
     username: str
     email: str
 
+    class Config:
+        from_attributes = True
 
-class UserCreate(UserBase):
+
+class UserCreate(User):
+    """ Pydantic validation for user data creation"""
+
     password: str
     confirm_password: str
 
@@ -20,31 +31,41 @@ class UserCreate(UserBase):
 
 
 class UserLogin(BaseModel):
+    """ User Login Blueprint"""
+
     email: EmailStr
     password: str
 
 
-class CommentBase(BaseModel):
+class CommentCreate(BaseModel):
+    """ pydantic model for comments """
+
     text: str
 
 
-class Comment(CommentBase):
+class Comment(CommentCreate):
+    """ response model for comments route """
+
     id: int
     post_id: int
-    created_date: datetime
+    date_posted: datetime
 
     class Config:
         from_attributes = True
 
 
-class PostBase(BaseModel):
+class PostCreate(BaseModel):
+    """ Pydantic model for creating posts """
     title: str
     content: str
 
 
-class Post(PostBase):
-    id: int
-    created_date: datetime
+class Post(PostCreate):
+    """ pydantic response model for post route"""
+
+    id: str
+    user_id: str
+    date_posted: datetime
     comments: List[Comment] = []
 
     class Config:
