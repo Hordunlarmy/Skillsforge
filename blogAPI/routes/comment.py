@@ -1,4 +1,4 @@
-from fastapi import Depends, HTTPException, APIRouter
+from fastapi import Depends, HTTPException, APIRouter, Path
 from fastapi.responses import HTMLResponse
 from engine import get_db, models, schemas
 from engine.schemas import Comment, CommentCreate
@@ -11,7 +11,12 @@ comment = APIRouter()
 
 
 @comment.post("/comments/", response_model=Comment)
-async def create_comment(user_id: str, post_id: str, comment: CommentCreate,
+async def create_comment(comment: CommentCreate,
+                         user_id: str = Path(...,
+                                             description="The post user ID"),
+                         post_id: str = Path(...,
+                                             description="The ID of the"
+                                             " post to comment on"),
                          db: Session = Depends(get_db)):
     """ route to create validated comments """
 
@@ -37,6 +42,7 @@ async def create_comment(user_id: str, post_id: str, comment: CommentCreate,
 @comment.get("/comments/", response_model=List[Comment])
 async def read_comments(db: Session = Depends(get_db)):
     """ Return a list of all comments """
+
     comments = db.query(models.Comment).all()
     if not comments:
         raise HTTPException(status_code=404, detail="No comments found")
@@ -44,8 +50,12 @@ async def read_comments(db: Session = Depends(get_db)):
 
 
 @comment.get("/comments/{comment_id}", response_model=Comment)
-async def read_comment(comment_id: str, db: Session = Depends(get_db)):
-    """ Return a comment by its id """
+async def read_comment(
+        comment_id: str = Path(...,
+                               description="The ID of the"
+                               " comment to retrieve"),
+        db: Session = Depends(get_db)):
+    """ Retrieve a comment """
 
     comment = db.query(models.Comment).filter(
         models.Comment.id == comment_id).first()
@@ -55,9 +65,13 @@ async def read_comment(comment_id: str, db: Session = Depends(get_db)):
 
 
 @comment.put("/comments/{comment_id}", response_model=Comment)
-async def update_comment(comment_id: str, comment: CommentCreate,
+async def update_comment(comment: CommentCreate,
+                         comment_id: str = Path(...,
+                                                description="The ID of the"
+                                                " comment to update"),
                          db: Session = Depends(get_db)):
-    """ Update a comment by its id and return updated comment """
+
+    """ Update a comment """
 
     comment_to_update = db.query(models.Comment).filter(
         models.Comment.id == comment_id).first()
@@ -78,7 +92,10 @@ async def update_comment(comment_id: str, comment: CommentCreate,
 
 
 @comment.delete("/comments/{comment_id}")
-async def delete_comment(comment_id: str, db: Session = Depends(get_db)):
+async def delete_comment(
+        comment_id: str = Path(...,
+                               description="The ID of the comment to delete"),
+        db: Session = Depends(get_db)):
     """ Delete a comment by its id """
 
     comment_to_delete = db.query(models.Comment).filter(

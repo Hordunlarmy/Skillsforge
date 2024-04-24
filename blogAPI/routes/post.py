@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Path
 from fastapi.responses import HTMLResponse
 from engine import get_db, models, schemas
 from engine.schemas import Post, PostCreate
@@ -10,7 +10,10 @@ post = APIRouter()
 
 
 @post.post("/posts/", response_model=Post)
-async def create_post(user_id: str, post: PostCreate,
+async def create_post(post: PostCreate,
+                      user_id: str = Path(...,
+                                          description="The ID of the"
+                                          " user posting"),
                       db: Session = Depends(get_db)):
     """ route to create validated posts """
 
@@ -44,8 +47,10 @@ async def read_posts(db: Session = Depends(get_db)):
 
 
 @post.get("/posts/{post_id}", response_model=Post)
-async def read_post(post_id: str, db: Session = Depends(get_db)):
-    """ Return a post by its id """
+async def read_post(
+        post_id: str = Path(..., description="The ID of the post to retrieve"),
+        db: Session = Depends(get_db)):
+    """ Retrieve a post """
 
     post = db.query(models.Post).filter(models.Post.id == post_id).first()
     if not post:
@@ -54,12 +59,18 @@ async def read_post(post_id: str, db: Session = Depends(get_db)):
 
 
 @post.put("/posts/{post_id}", response_model=Post)
-async def update_post(post_id: str, post: PostCreate,
+async def update_post(post: PostCreate,
+                      post_id: str = Path(...,
+                                          description="The ID of the post"
+                                          " to update"),
                       db: Session = Depends(get_db)):
-    """ Update a post by its id and return updated post """
+    """ Update a post """
 
     post_to_update = db.query(models.Post).filter(
         models.Post.id == post_id).first()
+    if not post_to_update:
+        raise HTTPException(status_code=404, detail="post doesnt exist")
+
     post_to_update.title = post.title
     post_to_update.content = post.content
     post_to_update.date_posted = datetime.utcnow()
@@ -76,7 +87,9 @@ async def update_post(post_id: str, post: PostCreate,
 
 
 @post.delete("/posts/{post_id}")
-async def delete_post(post_id: str, db: Session = Depends(get_db)):
+async def delete_post(
+        post_id: str = Path(..., description="The ID of the post to delete"),
+        db: Session = Depends(get_db)):
     """ Delete a post by its id """
 
     post_to_delete = db.query(models.Post).filter(
