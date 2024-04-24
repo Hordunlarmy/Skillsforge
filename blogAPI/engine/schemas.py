@@ -3,12 +3,7 @@ from typing import List, Optional
 from datetime import datetime
 
 
-class UserBase(BaseModel):
-    """ User Base Model"""
-    id: str
-
-
-class User(UserBase):
+class User(BaseModel):
     """ Base User Model"""
     username: str
     email: str
@@ -30,6 +25,16 @@ class UserCreate(User):
         return v
 
 
+class UserData(BaseModel):
+    """ User Base Model"""
+    id: str
+    username: str
+    email: str
+
+    class Config:
+        from_attributes = True
+
+
 class UserLogin(BaseModel):
     """ User Login Blueprint"""
 
@@ -43,11 +48,12 @@ class CommentCreate(BaseModel):
     text: str
 
 
-class Comment(CommentCreate):
+class Comment(BaseModel):
     """ response model for comments route """
 
-    id: int
-    post_id: int
+    id: str
+    post_id: str
+    text: str
     date_posted: datetime
 
     class Config:
@@ -60,11 +66,13 @@ class PostCreate(BaseModel):
     content: str
 
 
-class Post(PostCreate):
+class Post(BaseModel):
     """ pydantic response model for post route"""
 
     id: str
     user_id: str
+    title: str
+    content: str
     date_posted: datetime
     comments: List[Comment] = []
 

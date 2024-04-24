@@ -28,13 +28,14 @@ async def create_post(user_id: str, post: PostCreate,
     except Exception as e:
         db.rollback()
         raise HTTPException(
-            status_code=400, detail="Error while creating post")
+            status_code=400, detail=str(e))
 
     return new_post
 
 
 @post.get("/posts/", response_model=List[Post])
 async def read_posts(db: Session = Depends(get_db)):
+    """ Return a list of all posts """
 
     posts = db.query(models.Post).all()
     if not posts:
@@ -44,6 +45,7 @@ async def read_posts(db: Session = Depends(get_db)):
 
 @post.get("/posts/{post_id}", response_model=Post)
 async def read_post(post_id: str, db: Session = Depends(get_db)):
+    """ Return a post by its id """
 
     post = db.query(models.Post).filter(models.Post.id == post_id).first()
     if not post:
@@ -54,6 +56,7 @@ async def read_post(post_id: str, db: Session = Depends(get_db)):
 @post.put("/posts/{post_id}", response_model=Post)
 async def update_post(post_id: str, post: PostCreate,
                       db: Session = Depends(get_db)):
+    """ Update a post by its id and return updated post """
 
     post_to_update = db.query(models.Post).filter(
         models.Post.id == post_id).first()
@@ -67,13 +70,14 @@ async def update_post(post_id: str, post: PostCreate,
     except Exception as e:
         db.rollback()
         raise HTTPException(
-            status_code=400, detail="Error while updating post")
+            status_code=400, detail=str(e))
 
     return post_to_update
 
 
 @post.delete("/posts/{post_id}")
 async def delete_post(post_id: str, db: Session = Depends(get_db)):
+    """ Delete a post by its id """
 
     post_to_delete = db.query(models.Post).filter(
         models.Post.id == post_id).first()
@@ -88,6 +92,6 @@ async def delete_post(post_id: str, db: Session = Depends(get_db)):
     except Exception as e:
         db.rollback()
         raise HTTPException(
-            status_code=400, detail="Error while deleting post")
+            status_code=400, detail=str(e))
 
     return {"message": f"Post {deleted_id} deleted successfully"}

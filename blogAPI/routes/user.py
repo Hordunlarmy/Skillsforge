@@ -1,6 +1,6 @@
 from fastapi import Depends, HTTPException, APIRouter
 from engine import get_db, models, schemas
-from engine.schemas import UserBase, User, UserCreate, UserLogin
+from engine.schemas import UserData, User, UserCreate, UserLogin
 from auth.secure import (Token, get_password_hash, verify_password,
                          authenticate_user, create_access_token,
                          ACCESS_TOKEN_EXPIRE_MINUTES)
@@ -14,7 +14,7 @@ user = APIRouter()
 
 @user.post("/signup/", response_model=User)
 async def signup(user: UserCreate, db: Session = Depends(get_db)):
-    """ Returns user id """
+    """ Create and Returns new user """
 
     new_user = models.User(username=user.username, email=user.email,
                            password=get_password_hash(user.password))
@@ -25,7 +25,7 @@ async def signup(user: UserCreate, db: Session = Depends(get_db)):
     except Exception as e:
         db.rollback()
         raise HTTPException(
-            status_code=400, detail="Error while creating user")
+            status_code=400, detail=str(e))
 
     return new_user
 
@@ -50,11 +50,11 @@ async def login(user: UserLogin, db: Session = Depends(get_db)):
     return Token(access_token=access_token, token_type="bearer")
 
 
-@user.get("/users/", response_model=List[User])
+@user.get("/users/", response_model=List[UserData])
 async def read_users(db: Session = Depends(get_db)):
     """ Returns All Users"""
 
     users_data = db.query(models.User).all()
     if not users_data:
         raise HTTPException(status_code=404, detail="No users found")
-    return [schemas.User.from_orm(user) for user in users_data]
+    return [schemas.UserData.from_orm(user) for user in users_data]
