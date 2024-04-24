@@ -9,9 +9,10 @@ from engine import get_db, models
 from .schemas import TokenData
 from decouple import config
 
-SECRET_KEY = config("secret")
-ALGORITHM = config("algorithm")
-ACCESS_TOKEN_EXPIRE_MINUTES = 1
+SECRET_KEY = config(
+    "secret", default="cee619cd280708255b2ea19f56d24931d055d4148a8ed18688c962")
+ALGORITHM = config("algorithm", default="HS256")
+ACCESS_TOKEN_EXPIRE_MINUTES = config("token_expire", default=1, cast=int)
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
