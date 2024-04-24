@@ -1,4 +1,4 @@
-<picture> <source media="(prefers-color-scheme: dark)" srcset="https://i.imgur.com/U9XgQeE.png"> <source media="(prefers-color-scheme: light)" srcset="https://i.imgur.com/U9XgQeE.png"> <img alt="README image" src="https://i.imgur.com/U9XgQeE.png"> </picture>
+<picture> <source media="(prefers-color-scheme: dark)" srcset="https://i.imgur.com/8lgbDs0.png"> <source media="(prefers-color-scheme: light)" srcset="https://i.imgur.com/8lgbDs0.png"> <img alt="README image" src="https://i.imgur.com/8lgbDs0.png"> </picture>
 
 # Blogging Platform API
 This is a blogging platform API developed using FastAPI and SQLAlchemy. It supports creating, reading, updating, and deleting blog posts . Additionally, users can comment on posts, and there is functionality to search posts based on titles or content.
@@ -30,7 +30,7 @@ cd blogging-platform-api
 ```
 - Set up a virtual environment (optional but recommended)
 ```
-python -m venv venv
+python3 -m venv venv
 source venv/bin/activate  # On Windows use venv\Scripts\activate
 ```
 ### Install dependencies
@@ -39,9 +39,9 @@ source venv/bin/activate  # On Windows use venv\Scripts\activate
 ### Environment Setup
 Create a file named .env in the root directory and add environment-specific variables:
 ```
-secret = cee619cd280708255b2ea19f56d24931d055d4148a8ed18688c96298f7eb57d9
+secret = "your_secret_key"
 algorithm = HS256
-token_expire = 1
+token_expire = 10
 database=sqlite:///./blog.db
 ```
 ### Running the Application
