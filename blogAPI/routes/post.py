@@ -46,7 +46,7 @@ async def read_posts(db: Session = Depends(get_db)):
     return [schemas.Post.from_orm(post) for post in posts]
 
 
-@post.get("/posts/{post_id}", response_model=Post)
+@post.get("/posts/{id}", response_model=Post)
 async def read_post(
         post_id: str = Path(..., description="The ID of the post to retrieve"),
         db: Session = Depends(get_db)):
@@ -58,7 +58,7 @@ async def read_post(
     return post
 
 
-@post.put("/posts/{post_id}", response_model=Post)
+@post.put("/posts/{id}", response_model=Post)
 async def update_post(post: PostCreate,
                       post_id: str = Path(...,
                                           description="The ID of the post"
@@ -86,7 +86,7 @@ async def update_post(post: PostCreate,
     return post_to_update
 
 
-@post.delete("/posts/{post_id}")
+@post.delete("/posts/{id}")
 async def delete_post(
         post_id: str = Path(..., description="The ID of the post to delete"),
         db: Session = Depends(get_db)):

@@ -1,15 +1,17 @@
 from fastapi import Depends, HTTPException, APIRouter
 from engine import get_db, models, schemas
 from engine.schemas import UserData, User, UserCreate, UserLogin
-from auth.secure import (Token, get_password_hash, verify_password,
+from auth.schemas import Token, TokenData
+from auth.secure import (get_password_hash, verify_password,
                          authenticate_user, create_access_token,
-                         ACCESS_TOKEN_EXPIRE_MINUTES)
+                         current_user, ACCESS_TOKEN_EXPIRE_MINUTES)
 from datetime import timedelta
-from typing import List
+from typing import List, Annotated
 from sqlalchemy.orm import Session
 
 
 user = APIRouter()
+user_dependency = Annotated[TokenData, Depends(current_user)]
 
 
 @user.post("/signup/", response_model=User)
@@ -51,7 +53,8 @@ async def login(user: UserLogin, db: Session = Depends(get_db)):
 
 
 @user.get("/users/", response_model=List[UserData])
-async def read_users(db: Session = Depends(get_db)):
+async def read_users(current_user: user_dependency,
+                     db: Session = Depends(get_db)):
     """ Returns All Users"""
 
     users_data = db.query(models.User).all()

@@ -49,7 +49,7 @@ async def read_comments(db: Session = Depends(get_db)):
     return [schemas.Comment.from_orm(comment) for comment in comments]
 
 
-@comment.get("/comments/{comment_id}", response_model=Comment)
+@comment.get("/comments/{id}", response_model=Comment)
 async def read_comment(
         comment_id: str = Path(...,
                                description="The ID of the"
@@ -64,7 +64,7 @@ async def read_comment(
     return comment
 
 
-@comment.put("/comments/{comment_id}", response_model=Comment)
+@comment.put("/comments/{id}", response_model=Comment)
 async def update_comment(comment: CommentCreate,
                          comment_id: str = Path(...,
                                                 description="The ID of the"
@@ -91,7 +91,7 @@ async def update_comment(comment: CommentCreate,
     return comment_to_update
 
 
-@comment.delete("/comments/{comment_id}")
+@comment.delete("/comments/{id}")
 async def delete_comment(
         comment_id: str = Path(...,
                                description="The ID of the comment to delete"),
