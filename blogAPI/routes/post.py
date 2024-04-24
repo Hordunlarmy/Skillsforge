@@ -5,12 +5,13 @@ from engine.schemas import Post, PostCreate
 from datetime import datetime
 from typing import List
 from sqlalchemy.orm import Session
+from auth import user_dependency
 
 post = APIRouter()
 
 
 @post.post("/posts/", response_model=Post)
-async def create_post(post: PostCreate,
+async def create_post(current_user: user_dependency, post: PostCreate,
                       user_id: str = Path(...,
                                           description="The ID of the"
                                           " user posting"),
@@ -37,7 +38,8 @@ async def create_post(post: PostCreate,
 
 
 @post.get("/posts/", response_model=List[Post])
-async def read_posts(db: Session = Depends(get_db)):
+async def read_posts(current_user: user_dependency,
+                     db: Session = Depends(get_db)):
     """ Return a list of all posts """
 
     posts = db.query(models.Post).all()
@@ -47,9 +49,11 @@ async def read_posts(db: Session = Depends(get_db)):
 
 
 @post.get("/posts/{id}", response_model=Post)
-async def read_post(
-        post_id: str = Path(..., description="The ID of the post to retrieve"),
-        db: Session = Depends(get_db)):
+async def read_post(current_user: user_dependency,
+                    post_id: str = Path(...,
+                                        description="The ID of the post"
+                                        " to retrieve"),
+                    db: Session = Depends(get_db)):
     """ Retrieve a post """
 
     post = db.query(models.Post).filter(models.Post.id == post_id).first()
@@ -59,7 +63,7 @@ async def read_post(
 
 
 @post.put("/posts/{id}", response_model=Post)
-async def update_post(post: PostCreate,
+async def update_post(current_user: user_dependency, post: PostCreate,
                       post_id: str = Path(...,
                                           description="The ID of the post"
                                           " to update"),
@@ -87,9 +91,11 @@ async def update_post(post: PostCreate,
 
 
 @post.delete("/posts/{id}")
-async def delete_post(
-        post_id: str = Path(..., description="The ID of the post to delete"),
-        db: Session = Depends(get_db)):
+async def delete_post(current_user: user_dependency,
+                      post_id: str = Path(...,
+                                          description="The ID of the post"
+                                          " to delete"),
+                      db: Session = Depends(get_db)):
     """ Delete a post by its id """
 
     post_to_delete = db.query(models.Post).filter(

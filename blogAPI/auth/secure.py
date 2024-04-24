@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta, timezone
 from typing import Annotated
 from fastapi import Depends, FastAPI, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
@@ -55,11 +55,8 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)],
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        print("trying to decode......")
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        print("Decoded.....")
         user = TokenData(**payload)
-        print(user)
         if user.id is None or user.username is None or user.email is None:
             raise credentials_exception
         return user

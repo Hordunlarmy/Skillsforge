@@ -5,13 +5,14 @@ from engine.schemas import Comment, CommentCreate
 from datetime import datetime
 from typing import List
 from sqlalchemy.orm import Session
+from auth import user_dependency
 
 
 comment = APIRouter()
 
 
 @comment.post("/comments/", response_model=Comment)
-async def create_comment(comment: CommentCreate,
+async def create_comment(current_user: user_dependency, comment: CommentCreate,
                          user_id: str = Path(...,
                                              description="The post user ID"),
                          post_id: str = Path(...,
@@ -40,7 +41,8 @@ async def create_comment(comment: CommentCreate,
 
 
 @comment.get("/comments/", response_model=List[Comment])
-async def read_comments(db: Session = Depends(get_db)):
+async def read_comments(current_user: user_dependency,
+                        db: Session = Depends(get_db)):
     """ Return a list of all comments """
 
     comments = db.query(models.Comment).all()
@@ -50,11 +52,11 @@ async def read_comments(db: Session = Depends(get_db)):
 
 
 @comment.get("/comments/{id}", response_model=Comment)
-async def read_comment(
-        comment_id: str = Path(...,
-                               description="The ID of the"
-                               " comment to retrieve"),
-        db: Session = Depends(get_db)):
+async def read_comment(current_user: user_dependency,
+                       comment_id: str = Path(...,
+                                              description="The ID of the"
+                                              " comment to retrieve"),
+                       db: Session = Depends(get_db)):
     """ Retrieve a comment """
 
     comment = db.query(models.Comment).filter(
@@ -65,7 +67,7 @@ async def read_comment(
 
 
 @comment.put("/comments/{id}", response_model=Comment)
-async def update_comment(comment: CommentCreate,
+async def update_comment(current_user: user_dependency, comment: CommentCreate,
                          comment_id: str = Path(...,
                                                 description="The ID of the"
                                                 " comment to update"),
@@ -92,10 +94,11 @@ async def update_comment(comment: CommentCreate,
 
 
 @comment.delete("/comments/{id}")
-async def delete_comment(
-        comment_id: str = Path(...,
-                               description="The ID of the comment to delete"),
-        db: Session = Depends(get_db)):
+async def delete_comment(current_user: user_dependency,
+                         comment_id: str = Path(...,
+                                                description="The ID of the"
+                                                " comment to delete"),
+                         db: Session = Depends(get_db)):
     """ Delete a comment by its id """
 
     comment_to_delete = db.query(models.Comment).filter(

@@ -1,6 +1,7 @@
-from fastapi import Depends, HTTPException, APIRouter
+from fastapi import Depends, HTTPException, APIRouter, status
 from engine import get_db, models, schemas
 from engine.schemas import UserData, User, UserCreate, UserLogin
+from auth import user_dependency, oauth2
 from auth.schemas import Token, TokenData
 from auth.secure import (get_password_hash, verify_password,
                          authenticate_user, create_access_token,
@@ -33,10 +34,10 @@ async def signup(user: UserCreate, db: Session = Depends(get_db)):
 
 
 @user.post("/login/", response_model=Token)
-async def login(user: UserLogin, db: Session = Depends(get_db)):
+async def login(user: oauth2, db: Session = Depends(get_db)):
     """Validate And Authenticate User"""
 
-    old_user = authenticate_user(user.email, user.password, db)
+    old_user = authenticate_user(user.username, user.password, db)
     if not old_user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
