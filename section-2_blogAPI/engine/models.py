@@ -26,8 +26,8 @@ class Post(Base):
     title = Column(String(100), nullable=False)
     content = Column(Text, nullable=False)
     date_posted = Column(DateTime, default=datetime.utcnow)
-    user_id = Column(Integer, ForeignKey('user.id'),
-                     nullable=False, ondelete='CASCADE')
+    user_id = Column(Integer, ForeignKey(
+        'user.id', ondelete='CASCADE'), nullable=False)
     author = relationship("User", back_populates="posts")
     comments = relationship("Comment", back_populates="post")
 
