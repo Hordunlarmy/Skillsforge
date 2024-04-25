@@ -75,5 +75,8 @@ The application is structured around MVC architecture, where:
 ### Search Logic
 The search functionality leverages the SQL LIKE statement to find matches in post titles and contents. It is case-insensitive and matches any part of the text.
 
+### Authentication Logic
+A user account needs to be created and used to authorize protected routes
+
 ### Comment Handling
 Comments are linked to both users and posts through foreign keys in the database. When a comment is made, it's stored with references to both the post it belongs to and the user who made it.
