@@ -19,6 +19,16 @@ user_dependency = Annotated[TokenData, Depends(current_user)]
 async def signup(user: UserCreate, db: Session = Depends(get_db)):
     """ Create and Returns new user """
 
+    existing_user = db.query(models.User).filter(
+        (models.User.username == user.username) | (
+            models.User.email == user.email)
+    ).first()
+    if existing_user:
+        raise HTTPException(
+            status_code=400,
+            detail="A user with this username or email already exists."
+        )
+
     new_user = models.User(username=user.username, email=user.email,
                            password=get_password_hash(user.password))
     try:
