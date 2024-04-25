@@ -10,42 +10,6 @@ from auth import user_dependency
 post = APIRouter()
 
 
-@post.post("/posts/", response_model=Post)
-async def create_post(current_user: user_dependency, post: PostCreate,
-                      db: Session = Depends(get_db)):
-    """ route to create validated posts """
-
-    user = db.query(models.User).filter(
-        models.User.id == current_user.id).first()
-    if user:
-        new_post = models.Post(
-            user_id=current_user.id, title=post.title, content=post.content)
-    else:
-        raise HTTPException(status_code=404, detail="User not found")
-
-    try:
-        db.add(new_post)
-        db.commit()
-        db.refresh(new_post)
-    except Exception as e:
-        db.rollback()
-        raise HTTPException(
-            status_code=400, detail=str(e))
-
-    return new_post
-
-
-@post.get("/posts/", response_model=List[Post])
-async def read_posts(current_user: user_dependency,
-                     db: Session = Depends(get_db)):
-    """ Return a list of all posts """
-
-    posts = db.query(models.Post).all()
-    if not posts:
-        raise HTTPException(status_code=404, detail="No posts found")
-    return [schemas.Post.from_orm(post) for post in posts]
-
-
 @post.get("/posts/{post_id}", response_model=Post)
 async def read_post(current_user: user_dependency,
                     post_id: str = Path(...,
@@ -119,3 +83,39 @@ async def delete_post(current_user: user_dependency,
             status_code=400, detail=str(e))
 
     return {"message": f"Post {deleted_id} deleted successfully"}
+
+
+@post.post("/posts/", response_model=Post)
+async def create_post(current_user: user_dependency, post: PostCreate,
+                      db: Session = Depends(get_db)):
+    """ route to create validated posts """
+
+    user = db.query(models.User).filter(
+        models.User.id == current_user.id).first()
+    if user:
+        new_post = models.Post(
+            user_id=current_user.id, title=post.title, content=post.content)
+    else:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    try:
+        db.add(new_post)
+        db.commit()
+        db.refresh(new_post)
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(
+            status_code=400, detail=str(e))
+
+    return new_post
+
+
+@post.get("/posts/", response_model=List[Post])
+async def read_posts(current_user: user_dependency,
+                     db: Session = Depends(get_db)):
+    """ Return a list of all posts """
+
+    posts = db.query(models.Post).all()
+    if not posts:
+        raise HTTPException(status_code=404, detail="No posts found")
+    return [schemas.Post.from_orm(post) for post in posts]
