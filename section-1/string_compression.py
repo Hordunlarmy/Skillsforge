@@ -3,9 +3,13 @@
 def compress(string):
     """ Compress a string """
 
+    if not string:
+        return string
+
     compressed = []
     current = string[0]
     no_of_char = 0
+
     for char in string:
         if char == current:
             no_of_char += 1
@@ -16,6 +20,8 @@ def compress(string):
                 compressed.append(current)
             current = char
             no_of_char = 1
+
+    # Handling the last sequence
     if no_of_char > 1:
         compressed.append(current + str(no_of_char))
     else:
@@ -23,7 +29,7 @@ def compress(string):
 
     compressed_string = ''.join(compressed)
 
-    if len(compressed_string) < string:
+    if len(compressed_string) < len(string):
         return compressed_string
     else:
         return string
@@ -33,5 +39,4 @@ def compress(string):
 assert compress('bbcceeee') == 'b2c2e4'
 assert compress('aaabbbcccaaa') == 'a3b3c3a3'
 assert compress('a') == 'a'
-
 print("All tests passed successfully!")
