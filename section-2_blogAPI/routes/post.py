@@ -10,18 +10,16 @@ from auth import user_dependency
 post = APIRouter()
 
 
-@post.post("/posts/{user_id}", response_model=Post)
+@post.post("/posts/", response_model=Post)
 async def create_post(current_user: user_dependency, post: PostCreate,
-                      user_id: str = Path(...,
-                                          description="The ID of the"
-                                          " user posting"),
                       db: Session = Depends(get_db)):
     """ route to create validated posts """
 
-    user = db.query(models.User).filter(models.User.id == user_id).first()
+    user = db.query(models.User).filter(
+        models.User.id == current_user.id).first()
     if user:
         new_post = models.Post(
-            user_id=user.id, title=post.title, content=post.content)
+            user_id=current_user.id, title=post.title, content=post.content)
     else:
         raise HTTPException(status_code=404, detail="User not found")
 

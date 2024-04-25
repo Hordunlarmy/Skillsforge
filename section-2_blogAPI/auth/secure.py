@@ -12,7 +12,7 @@ from decouple import config
 SECRET_KEY = config(
     "secret", default="cee619cd280708255b2ea19f56d24931d055d4148a8ed18688c962")
 ALGORITHM = config("algorithm", default="HS256")
-ACCESS_TOKEN_EXPIRE_MINUTES = config("token_expire", default=1, cast=int)
+ACCESS_TOKEN_EXPIRE_MINUTES = config("token_expire", default=10, cast=int)
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -27,9 +27,10 @@ def get_password_hash(password):
     return pwd_context.hash(password)
 
 
-def authenticate_user(email: str,
+def authenticate_user(username: str,
                       password: str, db: Session = Depends(get_db)):
-    user = db.query(models.User).filter(models.User.email == email).first()
+    user = db.query(models.User).filter(
+        models.User.username == username).first()
     if not user:
         return False
     if not verify_password(password, user.password):
