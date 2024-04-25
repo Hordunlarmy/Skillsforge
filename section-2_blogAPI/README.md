@@ -1,5 +1,7 @@
 <picture> <source media="(prefers-color-scheme: dark)" srcset="https://i.imgur.com/8lgbDs0.png"> <source media="(prefers-color-scheme: light)" srcset="https://i.imgur.com/8lgbDs0.png"> <img alt="README image" src="https://i.imgur.com/8lgbDs0.png"> </picture>
 
+[<img src="https://run.pstmn.io/button.svg" alt="Run In Postman" style="width: 128px; height: 32px;">](https://god.gw.postman.com/run-collection/34428095-abf379b1-2a23-4314-a6a7-fa2501c43d23?action=collection%2Ffork&source=rip_markdown&collection-url=entityId%3D34428095-abf379b1-2a23-4314-a6a7-fa2501c43d23%26entityType%3Dcollection%26workspaceId%3D1ee2ff56-2d76-4ee0-a80b-a43ca188ff1b)
+
 # Blogging Platform API
 This is a blogging platform API developed using FastAPI and SQLAlchemy. It supports creating, reading, updating, and deleting blog posts . Additionally, users can comment on posts, and there is functionality to search posts based on titles or content.
 
