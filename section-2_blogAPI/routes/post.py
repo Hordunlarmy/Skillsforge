@@ -70,6 +70,9 @@ async def update_post(current_user: user_dependency, post: PostCreate,
 
     post_to_update = db.query(models.Post).filter(
         models.Post.id == post_id).first()
+    if post_to_update.user_id != current_user.id:
+        raise HTTPException(
+            status_code=404, detail="You cant update another user's post")
     if not post_to_update:
         raise HTTPException(status_code=404, detail="post doesnt exist")
 
@@ -98,6 +101,10 @@ async def delete_post(current_user: user_dependency,
 
     post_to_delete = db.query(models.Post).filter(
         models.Post.id == post_id).first()
+
+    if post_to_delete.user_id != current_user.id:
+        raise HTTPException(
+            status_code=404, detail="You cant delete another user's post")
 
     if post_to_delete is None:
         raise HTTPException(status_code=404, detail="Post doesnt exist")
