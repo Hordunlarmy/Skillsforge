@@ -26,7 +26,7 @@ This is a blogging platform API developed using FastAPI and SQLAlchemy. It suppo
 - Clone the repository
 ```
 git clone https://github.com/Hordunlarmy/Skillsforge
-cd section-2_blogAPI
+cd Skillsforge/section-2_blogAPI
 ```
 - Set up a virtual environment (optional but recommended)
 ```
