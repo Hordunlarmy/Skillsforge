@@ -6,7 +6,7 @@ from datetime import datetime
 class User(BaseModel):
     """ Base User Model"""
     username: str
-    email: str
+    email: EmailStr
 
     class Config:
         from_attributes = True

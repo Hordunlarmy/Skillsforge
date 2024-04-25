@@ -11,10 +11,8 @@ from auth import user_dependency
 comment = APIRouter()
 
 
-@comment.post("/comments/", response_model=Comment)
+@comment.post("/comments/{post_id}", response_model=Comment)
 async def create_comment(current_user: user_dependency, comment: CommentCreate,
-                         user_id: str = Path(...,
-                                             description="The post user ID"),
                          post_id: str = Path(...,
                                              description="The ID of the"
                                              " post to comment on"),
@@ -24,7 +22,7 @@ async def create_comment(current_user: user_dependency, comment: CommentCreate,
     post = db.query(models.Post).filter(models.Post.id == post_id).first()
     if post:
         new_comment = models.Comment(
-            user_id=user_id, post_id=post.id, text=comment.text)
+            user_id=current_user.id, post_id=post.id, text=comment.text)
     else:
         raise HTTPException(status_code=404, detail="Post not found")
 
@@ -51,7 +49,7 @@ async def read_comments(current_user: user_dependency,
     return [schemas.Comment.from_orm(comment) for comment in comments]
 
 
-@comment.get("/comments/{id}", response_model=Comment)
+@comment.get("/comments/{comment_id}", response_model=Comment)
 async def read_comment(current_user: user_dependency,
                        comment_id: str = Path(...,
                                               description="The ID of the"
@@ -66,7 +64,7 @@ async def read_comment(current_user: user_dependency,
     return comment
 
 
-@comment.put("/comments/{id}", response_model=Comment)
+@comment.put("/comments/{comment_id}", response_model=Comment)
 async def update_comment(current_user: user_dependency, comment: CommentCreate,
                          comment_id: str = Path(...,
                                                 description="The ID of the"
@@ -93,7 +91,7 @@ async def update_comment(current_user: user_dependency, comment: CommentCreate,
     return comment_to_update
 
 
-@comment.delete("/comments/{id}")
+@comment.delete("/comments/{comment_id}")
 async def delete_comment(current_user: user_dependency,
                          comment_id: str = Path(...,
                                                 description="The ID of the"

@@ -10,7 +10,7 @@ from auth import user_dependency
 post = APIRouter()
 
 
-@post.post("/posts/", response_model=Post)
+@post.post("/posts/{user_id}", response_model=Post)
 async def create_post(current_user: user_dependency, post: PostCreate,
                       user_id: str = Path(...,
                                           description="The ID of the"
@@ -48,7 +48,7 @@ async def read_posts(current_user: user_dependency,
     return [schemas.Post.from_orm(post) for post in posts]
 
 
-@post.get("/posts/{id}", response_model=Post)
+@post.get("/posts/{post_id}", response_model=Post)
 async def read_post(current_user: user_dependency,
                     post_id: str = Path(...,
                                         description="The ID of the post"
@@ -62,7 +62,7 @@ async def read_post(current_user: user_dependency,
     return post
 
 
-@post.put("/posts/{id}", response_model=Post)
+@post.put("/posts/{post_id}", response_model=Post)
 async def update_post(current_user: user_dependency, post: PostCreate,
                       post_id: str = Path(...,
                                           description="The ID of the post"
@@ -90,7 +90,7 @@ async def update_post(current_user: user_dependency, post: PostCreate,
     return post_to_update
 
 
-@post.delete("/posts/{id}")
+@post.delete("/posts/{post_id}")
 async def delete_post(current_user: user_dependency,
                       post_id: str = Path(...,
                                           description="The ID of the post"
