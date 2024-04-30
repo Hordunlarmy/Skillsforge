@@ -77,7 +77,7 @@ async def update_post(current_user: user_dependency, post: PostCreate,
     if post_to_update.user_id != current_user.id:
         raise HTTPException(
             status_code=404, detail="You cant update another user's post")
-        post_to_update.title = post.title
+    post_to_update.title = post.title
     post_to_update.content = post.content
     post_to_update.date_posted = datetime.utcnow()
 
