@@ -4,6 +4,9 @@
 This is a blogging platform API developed using FastAPI and SQLAlchemy. It supports creating, reading, updating, and deleting blog posts . Additionally, users can comment on posts, and there is functionality to search posts based on titles or content.
 
 [<img src="https://run.pstmn.io/button.svg" alt="Run In Postman" style="width: 128px; height: 32px;">](https://god.gw.postman.com/run-collection/34428095-abf379b1-2a23-4314-a6a7-fa2501c43d23?action=collection%2Ffork&source=rip_markdown&collection-url=entityId%3D34428095-abf379b1-2a23-4314-a6a7-fa2501c43d23%26entityType%3Dcollection%26workspaceId%3D1ee2ff56-2d76-4ee0-a80b-a43ca188ff1b)
+#### OR
+[![Static Badge](https://img.shields.io/badge/Run%20in%20wagger%20UI)](https://skillsforge-blog-api-0404d0fcec52.herokuapp.com/docs)
+
 
 ### Features
 * **User Management**: Create, read, update, and delete users.
@@ -66,6 +69,10 @@ This command starts the application with live reloading enabled, which is useful
 * **GET /comments/{id}**: Retrieve a specific comment.
 * **PUT /comments/{id}**: Update a specific comment.
 * **DELETE /comments/{id}**: Delete a specific comment.
+
+### Testing
+run `python3 -m unittest discover tests
+` in the projects root directory
 
 ### Program Logic
 The application is structured around MVC architecture, where:
