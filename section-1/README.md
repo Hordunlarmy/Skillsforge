@@ -15,7 +15,7 @@ Ensure you have Python installed on your system. This utility was developed and 
 No installation is necessary. You can include the `compress.py` file in your project directory and import the function directly.
 
 ### Examples
-Here are a few examples of how to use the `compress` function:
+Here are a few examples of how to use the `string_compression` function:
 
 ```python
 from string_compression import compress
@@ -54,7 +54,7 @@ This script is written in Python 3 and does not require any external libraries. 
 No installation is necessary. You can include the `compress.py` file in your project directory and import the function directly.
 
 ### Examples
-Here are a few examples of how to use the `compress` function:
+Here are a few examples of how to use the `largest_number_concatenator` function:
 
 ```python
 from largest_number_concatenator import printLargest
