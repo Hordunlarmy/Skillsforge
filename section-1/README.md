@@ -12,7 +12,7 @@ The String Compression provides a simple yet efficient way to compress a string 
 Ensure you have Python installed on your system. This utility was developed and tested with Python 3.8, but it should work with any Python 3.x version.
 
 ### Installing
-No installation is necessary. You can include the `compress.py` file in your project directory and import the function directly.
+No installation is necessary. You can include the `string_compression.py` file in your project directory and import the function directly.
 
 ### Examples
 Here are a few examples of how to use the `string_compression` function:
@@ -51,7 +51,7 @@ Efficiency: Direct and straightforward implementation suitable for small to medi
 This script is written in Python 3 and does not require any external libraries. It runs with the standard Python installation.
 
 ### Installing
-No installation is necessary. You can include the `compress.py` file in your project directory and import the function directly.
+No installation is necessary. You can include the `largest_number_concatenator.py` file in your project directory and import the function directly.
 
 ### Examples
 Here are a few examples of how to use the `largest_number_concatenator` function:
