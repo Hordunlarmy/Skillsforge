@@ -1,7 +1,7 @@
 <picture> <source media="(prefers-color-scheme: dark)" srcset="https://i.imgur.com/x23xapr.jpeg"> <source media="(prefers-color-scheme: light)" srcset="https://i.imgur.com/x23xapr.jpeg"> <img alt="README image" src="https://i.imgur.com/x23xapr.jpeg"> </picture>
 
 # Backend Development
-# SkilllForge Task
+SkillsForge Task
 
 ## Overview
 This repository contains all the task codes for the skillsforge backend development
